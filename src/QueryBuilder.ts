@@ -55,7 +55,7 @@ export class QueryBuilder {
 
 	#createWhere(whereCondition: string[]) {
 		if (whereCondition.length === 0) return ``;
-		return `WHERE ${whereCondition.join(" ")}`.trim();
+		return `WHERE ${whereCondition.join(" AND ")}`.trim();
 	}
 
 	#createLimit(limit: number) {
