@@ -1,0 +1,23 @@
+{
+	"name": "snowball-node-lib",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"start": "node dist/app.js",
+		"dev": "nodemon -w './**/*.ts' --exec node -r ts-node/register --env-file=.env ./src/app.ts",
+		"build": "tsc -p ."
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"snowflake-sdk": "^1.11.0"
+	},
+	"devDependencies": {
+		"@types/snowflake-sdk": "^1.6.24",
+		"nodemon": "^3.1.4",
+		"ts-node": "^10.9.2",
+		"typescript": "^5.5.4"
+	}
+}
