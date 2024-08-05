@@ -25,17 +25,37 @@ export abstract class SnowballModel {
 			.build();
 
 		await this.instance.connect();
-		const exec = await this.instance.execQuery(queryBuilder);
-		return this.mapResults(exec);
+		return await this.instance.execQuery(queryBuilder);
 	}
 
-	static async findOne(query: QueryOptions) {
-		//TODO
+	static async findOne(query: Omit<QueryOptions, "limit">) {
+		const select = this.buildSelect(query?.select);
+		const where = this.buildWhere(query?.where);
+		const queryBuilder = QueryBuilder.from(this.tableName)
+			.select(select)
+			.where(where)
+			.build();
+
+		await this.instance.connect();
+		const exec = await this.instance.execQuery(queryBuilder);
+		return exec[0];
+	}
+
+	static async query(query: string) {
+		return await this.instance.execQuery(query);
 	}
 
 	private static buildSelect(select: string[] = []) {
+		if (select.length === 0)
+			return Object.keys(this.fields).map(select =>
+				this.fields[select].databaseName
+					? `"${this.fields[select].databaseName}" AS "${select}"`
+					: `"${select}"`
+			);
 		return select.map(
-			select => `"${this.fields[select].databaseName}"` || `"${select}"`
+			select =>
+				`"${this.fields[select].databaseName}" AS "${select}"` ||
+				`"${select}"`
 		);
 	}
 
@@ -49,17 +69,6 @@ export abstract class SnowballModel {
 			acc[key] = value;
 			return acc;
 		}, {} as Record<string, any>);
-	}
-
-	private static mapResults(results: any[]) {
-		return results.map(result => {
-			return Object.keys(this.fields).reduce((acc, key) => {
-				const fieldOptions = this.fields[key];
-				const dbName = fieldOptions.databaseName || key;
-				acc[key] = result[dbName];
-				return acc;
-			}, {} as Record<string, any>);
-		});
 	}
 }
 
