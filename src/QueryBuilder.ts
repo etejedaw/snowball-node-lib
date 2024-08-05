@@ -6,7 +6,7 @@ export class QueryBuilder {
 
 	private constructor(tableName: string) {
 		this.#tableName = tableName;
-		this.#selectFields = [];
+		this.#selectFields = ["*"];
 		this.#whereConditions = [];
 		this.#limitCondition = 0;
 	}
@@ -17,7 +17,7 @@ export class QueryBuilder {
 
 	select(selectFields?: string[]) {
 		if (!selectFields || selectFields.length === 0)
-			this.#selectFields.push("*");
+			this.#selectFields = ["*"];
 		else this.#selectFields = selectFields;
 		return this;
 	}
@@ -46,7 +46,7 @@ export class QueryBuilder {
 	}
 
 	#createSelect(select: string[]) {
-		return `SELECT ${select.join(" ")}`.trim();
+		return `SELECT ${select.join(", ")}`.trim();
 	}
 
 	#createFrom(tableName: string) {
