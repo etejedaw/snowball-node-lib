@@ -2,7 +2,7 @@ import { DataType } from "snowflake-sdk";
 import { Snowflake } from "./Snowflake";
 import { QueryBuilder } from "./QueryBuilder";
 
-export abstract class SnowflakeModel {
+export abstract class SnowballModel {
 	static tableName: string;
 	static fields: ModelFields;
 	static instance: Snowflake;
