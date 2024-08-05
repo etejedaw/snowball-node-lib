@@ -22,6 +22,7 @@ export class Snowflake {
 	}
 
 	async execQuery<T>(query: string): Promise<T[]> {
+		console.log(`Snowflake | ${query}`);
 		return new Promise((resolve, reject) => {
 			this.#connection.execute({
 				sqlText: query,
