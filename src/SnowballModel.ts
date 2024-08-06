@@ -7,9 +7,13 @@ export abstract class SnowballModel {
 	static fields: ModelFields;
 	static instance: Snowflake;
 
+	constructor(params: Partial<any>) {
+		Object.assign(this, params);
+	}
+
 	static init(options: ModelInitOptions, fields: ModelFields) {
 		this.tableName = options.tableName;
-		this.instance = options.instace;
+		this.instance = options.instance;
 		this.fields = fields;
 	}
 
@@ -25,7 +29,8 @@ export abstract class SnowballModel {
 			.build();
 
 		await this.instance.connect();
-		return await this.instance.execQuery(queryBuilder);
+		const data = await this.instance.execQuery(queryBuilder);
+		return data;
 	}
 
 	static async findOne(query: Omit<QueryOptions, "limit">) {
@@ -38,7 +43,15 @@ export abstract class SnowballModel {
 
 		await this.instance.connect();
 		const exec = await this.instance.execQuery(queryBuilder);
+		if (!exec[0]) return;
 		return exec[0];
+	}
+
+	static create<T extends SnowballModel>(
+		this: new (params: Partial<T>) => T,
+		params: Partial<T>
+	): T {
+		return new this(params);
 	}
 
 	static async query(query: string) {
@@ -74,7 +87,7 @@ export abstract class SnowballModel {
 
 interface ModelInitOptions {
 	tableName: string;
-	instace: Snowflake;
+	instance: Snowflake;
 }
 
 interface FieldOptions {
